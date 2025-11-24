@@ -1,0 +1,65 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ambientes Virtuais (Virtual Environments)
+venv/
+env/
+.venv/
+.ENV/
+.env
+.env.*    # variações locais
+
+# Distribuição / Pacotes
+build/
+dist/
+*.egg-info/
+pip-wheel-metadata/
+
+# --- Selenium / Webdriver ---
+# Logs e executáveis do driver
+*.log
+chromedriver
+chromedriver.exe
+chromedriver.log
+geckodriver.log
+
+# --- Dados e bancos locais ---
+# Arquivos de banco sqlite gerados localmente
+*.db
+*.sqlite
+my_database.db
+
+# --- FastAPI / Uvicorn / ASGI ---
+# logs temporários e sockets
+*.pid
+*.sock
+uvicorn.log
+
+# --- Testes / Cobertura / Type-checkers ---
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+.mypy_cache/
+.pytype/
+.pyre/
+
+# --- IDEs e Editores ---
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+*.swp
+
+# --- Sistema Operativo ---
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# --- Outros ignoráveis comuns ---
+*.bak
+*.tmp
+*.old
+*.cache

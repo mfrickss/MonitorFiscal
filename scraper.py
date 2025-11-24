@@ -9,51 +9,55 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException, WebDriverException, TimeoutException
 import time
 
-driver = None
 
-try:
-    service = Service()
+def buscar_dolar():
 
-    options = webdriver.ChromeOptions()
-    options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
-    options.add_argument("--disable-blink-features=AutomationControlled")
-    options.add_experimental_option("excludeSwitches", ["enable-automation"])
-    options.add_experimental_option("useAutomationExtension", False)
-
-    driver = webdriver.Chrome(service=service, options=options)
+    driver = None
 
     try:
-        driver.get("https://google.com")
-    except WebDriverException:
-        raise Exception("Erro Crítico: Não foi possível acessar o site. Verifique sua conexão!")
+        service = Service()
 
-    wait = WebDriverWait(driver, 10)
-    
+        options = webdriver.ChromeOptions()
+        options.add_argument("--headless=new") # Obrigatório: sem interface gráfica
+        options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+        options.add_argument("--disable-blink-features=AutomationControlled")
+        options.add_argument("--no-sandbox") # Obrigatório: evita erro de permissão no Linux/Docker
+        options.add_argument("--disable-dev-shm-usage") # Obrigatório: evita crash por falta de memória
+        options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        options.add_experimental_option("useAutomationExtension", False)
 
-    try:
-        barra_pesquisa_elemento = wait.until(EC.presence_of_element_located((By.NAME, 'q')))
+        driver = webdriver.Chrome(service=service, options=options)
 
-        barra_pesquisa_elemento.send_keys("Dólar Hoje", Keys.ENTER)
-    except TimeoutException:
-        raise Exception("Erro Crítico: A barra de pesquisa não foi encontrada.")
+        try:
+            driver.get("https://google.com")
+        except WebDriverException:
+            raise Exception("Erro Crítico: Não foi possível acessar o site. Verifique sua conexão!")
+
+        wait = WebDriverWait(driver, 10)
+        
+
+        try:
+            barra_pesquisa_elemento = wait.until(EC.presence_of_element_located((By.NAME, 'q')))
+
+            barra_pesquisa_elemento.send_keys("Dólar Hoje", Keys.ENTER)
+        except TimeoutException:
+            raise Exception("Erro Crítico: A barra de pesquisa não foi encontrada.")
 
 
-    try:
-        valor_dolar_elemento = wait.until(EC.presence_of_element_located((By.XPATH, '//span[@data-name="Real brasileiro"]/preceding-sibling::span')))
-        valor_dolar_texto = valor_dolar_elemento.text
-        valor_dolar_texto = valor_dolar_texto.replace(',' , '.')
-        valor_dolar = float(valor_dolar_texto)
+        try:
+            valor_dolar_elemento = wait.until(EC.presence_of_element_located((By.XPATH, '//span[@data-name="Real brasileiro"]/preceding-sibling::span')))
+            valor_dolar_texto = valor_dolar_elemento.text
+            valor_dolar_texto = valor_dolar_texto.replace(',' , '.')
+            valor_dolar = float(valor_dolar_texto)
 
-        print(f"Valor encontrado ${valor_dolar}")
-    except TimeoutException:
-        print("Aviso: o elemento preço não foi encontrado com pela classe")
-except Exception as e:
-    print("ERRO")
-    print(f"Detalhes do ERRO: {e}")
+            return valor_dolar
+        except TimeoutException:
+            print("Aviso: o elemento preço não foi encontrado com pela classe")
+    except Exception as e:
+        print("ERRO")
+        print(f"Detalhes do ERRO: {e}")
 
-finally:
-    print("Finalizando script e limpando recursos")
-    if driver:
-        driver.quit()
-
- 
+    finally:
+        print("Finalizando script e limpando recursos")
+        if driver:
+            driver.quit()
