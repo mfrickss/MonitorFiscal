@@ -1,0 +1,59 @@
+import pandas as pd
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import NoSuchElementException, WebDriverException, TimeoutException
+import time
+
+driver = None
+
+try:
+    service = Service()
+
+    options = webdriver.ChromeOptions()
+    options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+    options.add_argument("--disable-blink-features=AutomationControlled")
+    options.add_experimental_option("excludeSwitches", ["enable-automation"])
+    options.add_experimental_option("useAutomationExtension", False)
+
+    driver = webdriver.Chrome(service=service, options=options)
+
+    try:
+        driver.get("https://google.com")
+    except WebDriverException:
+        raise Exception("Erro Crítico: Não foi possível acessar o site. Verifique sua conexão!")
+
+    wait = WebDriverWait(driver, 10)
+    
+
+    try:
+        barra_pesquisa_elemento = wait.until(EC.presence_of_element_located((By.NAME, 'q')))
+
+        barra_pesquisa_elemento.send_keys("Dólar Hoje", Keys.ENTER)
+    except TimeoutException:
+        raise Exception("Erro Crítico: A barra de pesquisa não foi encontrada.")
+
+
+    try:
+        valor_dolar_elemento = wait.until(EC.presence_of_element_located((By.XPATH, '//span[@data-name="Real brasileiro"]/preceding-sibling::span')))
+        valor_dolar_texto = valor_dolar_elemento.text
+        valor_dolar_texto = valor_dolar_texto.replace(',' , '.')
+        valor_dolar = float(valor_dolar_texto)
+
+        print(f"Valor encontrado ${valor_dolar}")
+    except TimeoutException:
+        print("Aviso: o elemento preço não foi encontrado com pela classe")
+except Exception as e:
+    print("ERRO")
+    print(f"Detalhes do ERRO: {e}")
+
+finally:
+    print("Finalizando script e limpando recursos")
+    if driver:
+        driver.quit()
+
+ 
