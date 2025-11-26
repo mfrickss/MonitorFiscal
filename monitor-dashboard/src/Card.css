@@ -1,0 +1,30 @@
+/* src/Card.css */
+.card-cotacao {
+  background-color: #2a2a2a;
+  border-radius: 10px;
+  padding: 20px;
+  width: 200px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  border: 1px solid #444;
+  margin: 10px;
+  display: inline-block; /* Para ficar um do lado do outro */
+}
+
+.card-cotacao h3 {
+  color: #aaa;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.card-cotacao .valor {
+  font-size: 28px;
+  font-weight: bold;
+  color: #00ff88; /* Verde Hacker */
+}
+
+.card-cotacao .rodape {
+  font-size: 10px;
+  color: #666;
+  margin-top: 10px;
+}

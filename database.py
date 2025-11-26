@@ -21,7 +21,7 @@ def criar_tabela():
 
         print("Tabela criada!")
 
-def salvar_valor(valor_dolar):
+def salvar_valor(valor):
     with sqlite3.connect("my_database.db") as connection:
 
         cursor = connection.cursor()
@@ -32,9 +32,10 @@ def salvar_valor(valor_dolar):
         INSERT INTO historico(valor, data) VALUES(?, ?)
         '''
 
-        cursor.execute(sql, (valor_dolar, data))
+        cursor.execute(sql, (valor, data))
 
         connection.commit()
-        print(f"Valor {valor_dolar} salvo com sucesso!")
+        print(f"Valor {valor} salvo com sucesso!")
+
 
 

@@ -10,13 +10,12 @@ from selenium.common.exceptions import NoSuchElementException, WebDriverExceptio
 import time
 
 
-def buscar_dolar():
+def buscar_cotacao(moeda_pesquisa):
 
     driver = None
 
     try:
         service = Service()
-
         options = webdriver.ChromeOptions()
         options.add_argument("--headless=new") # Obrigatório: sem interface gráfica
         options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
@@ -27,37 +26,37 @@ def buscar_dolar():
         options.add_experimental_option("useAutomationExtension", False)
 
         driver = webdriver.Chrome(service=service, options=options)
-
-        try:
-            driver.get("https://google.com")
-        except WebDriverException:
-            raise Exception("Erro Crítico: Não foi possível acessar o site. Verifique sua conexão!")
-
+        driver.get("https://google.com")
         wait = WebDriverWait(driver, 10)
         
 
-        try:
-            barra_pesquisa_elemento = wait.until(EC.presence_of_element_located((By.NAME, 'q')))
-
-            barra_pesquisa_elemento.send_keys("Dólar Hoje", Keys.ENTER)
-        except TimeoutException:
-            raise Exception("Erro Crítico: A barra de pesquisa não foi encontrada.")
+        barra_pesquisa_elemento = wait.until(EC.presence_of_element_located((By.NAME, 'q')))
+        barra_pesquisa_elemento.send_keys(moeda_pesquisa, Keys.ENTER)
 
 
-        try:
-            valor_dolar_elemento = wait.until(EC.presence_of_element_located((By.XPATH, '//span[@data-name="Real brasileiro"]/preceding-sibling::span')))
-            valor_dolar_texto = valor_dolar_elemento.text
-            valor_dolar_texto = valor_dolar_texto.replace(',' , '.')
-            valor_dolar = float(valor_dolar_texto)
+        elemento_valor = wait.until(EC.presence_of_element_located(
+            (By.XPATH, '//span[@data-name="Real brasileiro"]/preceding-sibling::span')
+            ))
 
-            return valor_dolar
-        except TimeoutException:
-            print("Aviso: o elemento preço não foi encontrado com pela classe")
+        valor_texto = elemento_valor.text.replace(',', '.')
+        return float(valor_texto)
+
     except Exception as e:
-        print("ERRO")
-        print(f"Detalhes do ERRO: {e}")
+        print(f"ERRO ao buscar moeda {moeda_pesquisa}: {e}")
+        raise e
 
     finally:
         print("Finalizando script e limpando recursos")
         if driver:
             driver.quit()
+
+
+def buscar_euro():
+    return buscar_cotacao("Euro hoje")
+
+
+def buscar_dolar():
+    return buscar_cotacao("Dólar hoje")
+
+def buscar_bitcoin():
+    return buscar_cotacao("Bitcoin hoje")

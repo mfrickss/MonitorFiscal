@@ -10,7 +10,7 @@ app = FastAPI(title="Meu Monitor Fiscal")
 def read_root():
     return {"Hello": "World", "message": "API está rodando!"}
 
-@app.get('/atualizar')
+@app.get('/dolar')
 def pegar_cotacao_dolar():
     try:
         valor = scraper.buscar_dolar()
@@ -18,3 +18,4 @@ def pegar_cotacao_dolar():
         return {"moeda": "dolar", "valor": valor}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
