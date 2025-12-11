@@ -38,7 +38,7 @@ def buscar_cotacao(moeda_pesquisa):
             (By.XPATH, '//span[@data-name="Real brasileiro"]/preceding-sibling::span')
             ))
 
-        valor_texto = elemento_valor.text.replace(',', '.')
+        valor_texto = elemento_valor.text.replace('.', '').replace(',' , '.')
         return float(valor_texto)
 
     except Exception as e:
@@ -57,6 +57,3 @@ def buscar_euro():
 
 def buscar_dolar():
     return buscar_cotacao("Dólar hoje")
-
-def buscar_bitcoin():
-    return buscar_cotacao("Bitcoin hoje")
